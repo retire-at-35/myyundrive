@@ -1,0 +1,245 @@
+/* 容器样式 */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card {
+  background: #ffffff;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+  overflow: hidden;
+}
+
+/* 头部样式 */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-top: 32px;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.title {
+  font-size: 24px;
+  color: #2c3e50;
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+/* 表单样式 */
+.auth-form {
+  padding: 0 32px 32px;
+}
+
+/* 输入框样式 */
+:deep(.el-input__wrapper) {
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px #e0e6ed !important;
+  padding: 0 16px;
+  height: 40px;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+}
+
+:deep(.el-input__wrapper:hover) {
+  box-shadow: 0 0 0 1px #94a3b8 !important;
+}
+
+:deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  background: #ffffff;
+}
+
+/* 按钮样式 */
+:deep(.el-button) {
+  border-radius: 8px;
+  font-weight: 500;
+  height: 40px;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-button--primary) {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  width: 100%;
+}
+
+:deep(.el-button--primary:hover) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+}
+
+/* 发送验证码按钮 */
+.send-code-button {
+  min-width: 120px !important;
+  font-size: 13px !important;
+  height: 40px !important;
+  padding: 0 16px !important;
+}
+
+/* 验证码容器 */
+.verify-code-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.verify-code-input {
+  flex: 1;
+}
+
+.verify-code-img {
+  width: 160px;
+  height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.verify-code-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+/* 邮箱验证码容器 */
+.email-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.email-input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 操作链接 */
+.operation-links {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 24px;
+}
+
+.operation-links a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.operation-links a:hover {
+  color: #2563eb;
+}
+
+.operation-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.operation-links a:hover::after {
+  transform: scaleX(1);
+}
+
+/* 对话框样式 */
+:deep(.verify-dialog .el-dialog) {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+:deep(.verify-dialog .el-dialog__header) {
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.verify-dialog-content {
+  padding: 24px;
+}
+
+/* 响应式布局 */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 16px;
+  }
+
+  .auth-form {
+    padding: 0 24px 24px;
+  }
+
+  .operation-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+/* 确保按钮容器居中 */
+:deep(.el-form-item:last-child) {
+  margin-bottom: 0;
+  text-align: center;
+}
+
+/* 提交按钮容器 */
+.submit-button {
+  width: 100% !important;
+}
+
+/* 对话框中的验证码图片 */
+.verify-img {
+  width: 160px;
+  height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.verify-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+} 

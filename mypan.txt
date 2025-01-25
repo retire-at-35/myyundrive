@@ -1,0 +1,85 @@
+create table email_code
+(
+    email       varchar(100) not null,
+    code        varchar(6)   not null,
+    create_time datetime     null,
+    status      tinyint      null comment '0未使用;1已使用',
+    constraint code
+        unique (code)
+)
+    comment '邮箱验证码';
+
+create table file_info
+(
+    file_id          varchar(10)  not null,
+    user_id          varchar(10)  not null,
+    file_md5         varchar(32)  null,
+    file_pid         varchar(10)  null,
+    file_size        bigint       null,
+    file_name        varchar(200) null,
+    file_cover       varchar(100) null comment '文件封面',
+    file_path        varchar(100) null comment '文件在服务器的路径',
+    create_time      datetime     null,
+    last_update_time datetime     null,
+    folder_type      tinyint(1)   null comment '0是文件1是文件夹',
+    file_category    tinyint(1)   null comment '文件分类 1视频 2音频 3图片 4文档 5其他',
+    file_type        tinyint      null comment '1视频 2音频 3图片 4PDF 5doc 6excel 7txt 8code
+9zip 10其他',
+    status           tinyint      null comment '0转码中 1转码失败 2转码成功',
+    recover_time     datetime     null comment '进入回收站时间',
+    del_flag         tinyint(1)   null comment '0删除 1回收站 2正常'
+);
+
+create index file_info_file_id_index
+    on file_info (file_id);
+
+create index idx_create_time
+    on file_info (create_time);
+
+create index idx_del_flag
+    on file_info (del_flag);
+
+create index idx_file_pid
+    on file_info (file_pid);
+
+create index idx_md5
+    on file_info (file_md5);
+
+create index idx_recover_time
+    on file_info (recover_time);
+
+create index idx_user_id
+    on file_info (user_id);
+
+create table file_share
+(
+    share_id    varchar(20)  not null
+        primary key,
+    file_id     varchar(150) null,
+    user_id     varchar(10)  null,
+    valid_type  tinyint(1)   null comment '有效期类型,0是一天,1是7天,2是30天,3是永久有效
+',
+    expire_time datetime     null comment '失效时间',
+    share_time  datetime     null comment '分享时间
+',
+    code        varchar(5)   null comment '分享码',
+    show_count  int          null
+);
+
+create table user_info
+(
+    user_id         varchar(15)                                                                                                             not null
+        primary key,
+    nick_name       varchar(20)                                                                                                             not null,
+    email           varchar(100)                                                                                                            not null,
+    avatar          varchar(150) default 'https://web-tlias-yaojiongdong.oss-cn-guangzhou.aliyuncs.com/92d15af66f41713e1c9f21e19094274.png' null,
+    password        varchar(32)                                                                                                             not null,
+    join_time       datetime                                                                                                                null,
+    last_login_time datetime                                                                                                                null,
+    status          tinyint                                                                                                                 null,
+    user_space      bigint                                                                                                                  not null,
+    total_space     bigint                                                                                                                  not null,
+    constraint email
+        unique (email)
+);
+
