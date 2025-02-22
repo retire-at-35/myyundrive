@@ -99,12 +99,13 @@
         </div>
         <template #footer>
           <div class="dialog-footer">
-            <el-button @click="verifyDialogVisible = false">取消</el-button>
+            <el-button @click="verifyDialogVisible = false" size="default">取消</el-button>
             <el-button 
               type="primary" 
               @click="handleVerifyCode"
               :loading="isSending"
               :disabled="isSending"
+              size="default"
             >
               {{ isSending ? '发送中...' : '确认' }}
             </el-button>
@@ -235,6 +236,7 @@ const handleVerifyCode = async () => {
     startCountdown()
   } catch (error) {
     refreshDialogVerifyCode()
+    ElMessage.error('验证码发送失败,请重试')
   } finally {
     isSending.value = false
   }
@@ -302,4 +304,31 @@ onMounted(() => {
 
 <style scoped>
 @import '../assets/styles/auth-form.css';
+
+.dialog-footer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.verify-dialog :deep(.el-dialog__footer) {
+  padding: 10px 20px 20px;
+}
+
+.dialog-footer .el-button {
+  width: 80px;
+  padding: 8px 15px;
+  font-size: 14px;
+}
+
+.verify-dialog-content {
+  padding: 10px 0;
+}
+
+.verify-input-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
 </style> 

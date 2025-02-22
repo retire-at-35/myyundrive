@@ -16,11 +16,14 @@ import com.pan.service.UserInfoService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminController extends CommonController{
     @Resource
     private FileInfoService fileInfoService;
 
@@ -77,6 +80,14 @@ public class AdminController {
     public Result deleteFileInfo(@VerifyParam(required = true)String userId,@VerifyParam(required = true)String fileId){
         fileInfoService.deleteFileInfo(userId,fileId);
         return Result.success("删除成功");
+    }
+
+    // 文件下载接口
+    @GetMapping("/download")
+    @GlobalInterceptor(checkParams = true,checkAdmin = true)
+    public void download(HttpSession session,HttpServletRequest request,HttpServletResponse response,String userId,String fileIds) throws UnsupportedEncodingException {
+        SessionWebUserDto sessionWebUserDto = (SessionWebUserDto) session.getAttribute(Constant.SESSION_LOGIN_KEY);
+        super.download(request,response,fileIds,userId);
     }
 
 

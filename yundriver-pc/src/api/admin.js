@@ -63,14 +63,21 @@ export function deleteFile(userId, fileId) {
   })
 }
 
-// 下载文件
-export function downloadFiles(fileId) {
-  return request({
-    url: '/api/file/download',
-    method: 'get',
-    params: {
-      fileId
-    },
-    responseType: 'blob'  // 设置响应类型为 blob
-  })
-} 
+// // 下载文件
+// export function downloadFiles(fileId) {
+//   return request({
+//     url: '/api/file/download',
+//     method: 'get',
+//     params: {
+//       fileId
+//     },
+//     responseType: 'blob'  // 设置响应类型为 blob
+//   })
+// } 
+
+
+export function downloadFiles(userId,fileIds) {
+  // 使用完整的 API URL
+  const url = `${import.meta.env.VITE_API_URL}/api/admin/download?fileIds=${fileIds}&userId=${userId}`
+  window.open(url, '_blank')
+}

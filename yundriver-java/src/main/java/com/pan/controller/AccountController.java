@@ -39,10 +39,14 @@ public class AccountController {
         response.setContentType("image/jpeg");
         String code = vCode.getCode();
         // 0的话是邮箱验证码，1是登录或者注册的
-        if (type == null || type == 0) {
+        if (type == 0) {
             session.setAttribute(Constant.CHECK_CODE_EMAIL, code);
-        } else {
+        }
+        else if(type == 1) {
             session.setAttribute(Constant.CHECK_CODE, code);
+        }
+        else {
+            throw new BussinessException("参数异常");
         }
         vCode.write(response.getOutputStream());
     }

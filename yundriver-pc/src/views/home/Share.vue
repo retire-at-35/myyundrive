@@ -53,13 +53,14 @@
           <!-- 有效期列 -->
           <el-table-column label="有效期" width="180">
             <template #default="{ row }">
-              <span v-if="row.validType === 0">永久有效</span>
+              <span v-if="row.validType === 0 || (!row.expireTime)">永久有效</span>
               <span v-else>
                 {{ formatDate(row.expireTime) }} 到期
               </span>
             </template>
           </el-table-column>
 
+          
           <!-- 操作列 -->
           <el-table-column label="操作" width="180" fixed="right">
             <template #default="{ row }">

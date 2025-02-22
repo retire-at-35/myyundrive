@@ -57,13 +57,13 @@
         <el-table-column label="操作" width="150" fixed="right">
           <template #default="{ row }">
             <el-button-group>
-              <el-button 
+              <!-- <el-button 
                 type="primary" 
                 link
                 @click="handlePreview(row)"
               >
                 预览
-              </el-button>
+              </el-button> -->
               <el-button 
                 type="primary" 
                 link
@@ -113,7 +113,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { formatDate } from '@/utils/date'
 import { formatFileSize, isDocumentFile, isImageFile } from '@/utils/file'
 import { loadAllFileList, deleteFile } from '@/api/admin'
-import { downloadFiles } from '@/api/file'
+import { downloadFiles } from '@/api/admin'
 import FilePreview from '@/components/FilePreview.vue'
 
 // 状态变量
@@ -196,7 +196,7 @@ const handleDownload = async (file) => {
   
   try {
     loading.value = true
-    await downloadFiles(file.fileId)
+    await downloadFiles(file.userId,file.fileId)
     ElMessage.success('下载成功')
   } catch (error) {
     console.error('下载失败:', error)

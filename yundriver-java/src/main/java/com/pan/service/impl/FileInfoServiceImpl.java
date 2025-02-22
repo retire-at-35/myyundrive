@@ -768,7 +768,8 @@ public class FileInfoServiceImpl extends ServiceImpl<FileInfoMapper, FileInfo>
         LambdaQueryWrapper<FileInfo> query = new LambdaQueryWrapper<>();
         query.eq(FileInfo::getFilePid,filePid)
                 .eq(FileInfo::getUserId,userId)
-                .eq(FileInfo::getFileName,fileName);
+                .eq(FileInfo::getFileName,fileName)
+                .eq(FileInfo::getDelFlag,DelFlagEnum.NORMAL.getStatus());
         Long count = fileInfoMapper.selectCount(query);
         if(count > 0){
             fileName = StringTools.rename(fileName);

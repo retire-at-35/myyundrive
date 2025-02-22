@@ -24,7 +24,8 @@ public class RegisterDto {
     /**
      * 用户昵称
      */
-    @VerifyParam(required = true) // 必填
+    @VerifyParam(required = true)
+    // 必填
     private String nickName;
 
     /**

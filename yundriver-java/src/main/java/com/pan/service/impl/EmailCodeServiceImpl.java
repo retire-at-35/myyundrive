@@ -3,6 +3,7 @@ package com.pan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pan.component.RedisComponent;
+import com.pan.exception.BussinessException;
 import com.pan.mapper.UserInfoMapper;
 import com.pan.pojo.dto.SystemDto;
 import com.pan.pojo.entity.EmailCode;
@@ -53,7 +54,7 @@ public class EmailCodeServiceImpl extends ServiceImpl<EmailCodeMapper, EmailCode
             lambdaQueryWrapper.eq(UserInfo::getEmail,email);
             UserInfo userInfo = userInfoMapper.selectOne(lambdaQueryWrapper);
             if(null!=userInfo){
-                throw new RuntimeException("邮箱已经存在");
+                throw new BussinessException("邮箱已经存在");
             }
         }
         // 销毁上一次邮箱码
@@ -75,7 +76,7 @@ public class EmailCodeServiceImpl extends ServiceImpl<EmailCodeMapper, EmailCode
         LambdaQueryWrapper<EmailCode> query = new LambdaQueryWrapper<EmailCode>().eq(EmailCode::getEmail, email).eq(EmailCode::getCode, emailCode);
         EmailCode ec = emailCodeMapper.selectOne(query);
         if(null == ec){
-            throw new RuntimeException("验证码错误");
+            throw new BussinessException("验证码错误");
         }
         // 判断验证码是否过期
         if (ec.getStatus() == 1 || System.currentTimeMillis() - ec.getCreateTime().getTime()>15*1000*60){
@@ -97,7 +98,7 @@ public class EmailCodeServiceImpl extends ServiceImpl<EmailCodeMapper, EmailCode
             javaMailSender.send(message);
         } catch (Exception e) {
             logger.error("邮件发送异常",e);
-            throw new RuntimeException(e);
+            throw new BussinessException("请检查邮箱是否有误或者稍后再试");
         }
 
     }

@@ -122,12 +122,13 @@
       </div>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="verifyDialogVisible = false">取消</el-button>
+          <el-button @click="verifyDialogVisible = false" size="default">取消</el-button>
           <el-button 
             type="primary" 
             @click="handleVerifyCode"
             :loading="isSending"
             :disabled="isSending"
+            size="default"
           >
             {{ isSending ? '发送中...' : '确认' }}
           </el-button>
@@ -175,38 +176,56 @@ const dialogVerifyCodeUrl = ref('')
 // 添加发送状态控制
 const isSending = ref(false)
 
+// 定义正则表达式规则
+const REGEX_RULES = {
+    IP: { pattern: /^([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}$/, message: 'IP地址' },
+    POSITIVE_INTEGER: { pattern: /^[0-9]*[1-9][0-9]*$/, message: '正整数' },
+    NUMBER_LETTER_UNDER_LINE: { pattern: /^\w+$/, message: '由数字、26个英文字母或者下划线组成的字符串' },
+    EMAIL: { pattern: /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/, message: '邮箱' },
+    PHONE: { pattern: /^(1[0-9])\d{9}$/, message: '手机号码' },
+    COMMON: { pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/, message: '数字，字母，中文，下划线' },
+    PASSWORD: { pattern: /^(?=.*\d)(?=.*[a-zA-Z])[\da-zA-Z~!@#$%^&*_]{8,18}$/, message: '数字，字母，特殊字符 8 - 18位的组合' },
+    ACCOUNT: { pattern: /^[a-zA-Z][a-zA-Z0-9_\u4e00-\u9fa5]{0,5}$/, message: '字母开头,由数字、英文字母或者下划线组成' },
+    MONEY: { pattern: /^[0-9]+(\.[0-9]{1,2})?$/, message: '金额' }
+};
+
+// 原规则对象
 const rules = {
-  nickName: [
-    { required: true, message: '请输入昵称', trigger: 'blur' },
-  ],
-  email: [
-    { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
-  ],
-  emailCode: [
-    { required: true, message: '请输入邮箱验证码', trigger: 'blur' },
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, message: '密码长度不能小于6位', trigger: 'blur' }
-  ],
-  confirmPassword: [
-    { required: true, message: '请确认密码', trigger: 'blur' },
-    {
-      validator: (rule, value, callback) => {
-        if (value !== registerForm.password) {
-          callback(new Error('两次输入的密码不一致'))
-        } else {
-          callback()
+    nickName: [
+        { required: true, message: '请输入昵称', trigger: 'blur' },
+        { pattern: REGEX_RULES.COMMON.pattern, message: REGEX_RULES.COMMON.message, trigger: 'blur' }
+    ],
+    email: [
+        { required: true, message: '请输入邮箱', trigger: 'blur' },
+        { pattern: REGEX_RULES.EMAIL.pattern, message: '请输入正确的邮箱格式', trigger: 'blur' }
+    ],
+    emailCode: [
+        { required: true, message: '请输入邮箱验证码', trigger: 'blur' }
+    ],
+    password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { pattern: REGEX_RULES.PASSWORD.pattern, message: REGEX_RULES.PASSWORD.message, trigger: 'blur' }
+    ],
+    confirmPassword: [
+        { required: true, message: '请确认密码', trigger: 'blur' },
+        {
+            validator: (rule, value, callback) => {
+                if (value !== registerForm.password) {
+                    callback(new Error('两次输入的密码不一致'));
+                } else if (!REGEX_RULES.PASSWORD.pattern.test(value)) {
+                    callback(new Error(REGEX_RULES.PASSWORD.message));
+                } else {
+                    callback();
+                }
+            },
+            trigger: 'blur'
         }
-      },
-      trigger: 'blur'
-    }
-  ],
-  verifyCode: [
-    { required: true, message: '请输入验证码', trigger: 'blur' },
-  ]
-}
+    ],
+    verifyCode: [
+        { required: true, message: '请输入验证码', trigger: 'blur' },
+        { pattern: REGEX_RULES.NUMBER_LETTER_UNDER_LINE.pattern, message: REGEX_RULES.NUMBER_LETTER_UNDER_LINE.message, trigger: 'blur' }
+    ]
+};
 
 const registerFormRef = ref(null)
 
@@ -247,7 +266,6 @@ const handleVerifyCode = async () => {
     ElMessage.error('请输入验证码')
     return
   }
-
   try {
     isSending.value = true  // 开始发送时禁用按钮
     await sendEmailCodeApi({
@@ -260,6 +278,7 @@ const handleVerifyCode = async () => {
     startCountdown()
   } catch (error) {
     refreshDialogVerifyCode()
+    ElMessage.error(error.message || '发送失败')
   } finally {
     isSending.value = false  // 无论成功失败都启用按钮
   }
@@ -267,10 +286,11 @@ const handleVerifyCode = async () => {
 
 const handleRegister = async () => {
   if (!registerFormRef.value) return
+
   await registerFormRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        await register({
+          await register({
           email: registerForm.email,
           nickName: registerForm.nickName,
           password: md5(registerForm.password),
@@ -280,6 +300,7 @@ const handleRegister = async () => {
         ElMessage.success('注册成功')
         router.replace('/login')
       } catch (error) {
+        ElMessage.error(error.message || '注册失败')
         refreshVerifyCode()
       }
     }
@@ -327,5 +348,30 @@ onMounted(() => {
 <style scoped>
 @import '../assets/styles/auth-form.css';
 
-/* 移除所有自定义的样式，完全使用公共样式 */
+.dialog-footer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.verify-dialog :deep(.el-dialog__footer) {
+  padding: 10px 20px 20px;
+}
+
+.dialog-footer .el-button {
+  width: 80px;
+  padding: 8px 15px;
+  font-size: 14px;
+}
+
+.verify-dialog-content {
+  padding: 10px 0;
+}
+
+.verify-input-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
 </style> 

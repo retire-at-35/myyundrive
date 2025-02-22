@@ -7,6 +7,7 @@ import router from '@/router'
 axios.defaults.withCredentials = true
 const instance = axios.create({
   baseURL: 'http://114.132.59.198:8081',
+  // baseURL: 'http://localhost:8081',
   timeout: 8000,
   withCredentials: true
 })

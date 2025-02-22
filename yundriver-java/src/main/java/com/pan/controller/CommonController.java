@@ -192,6 +192,7 @@ public class CommonController {
         List<FileInfo> list = fileInfoService.list(query);
 
         if (list.size() != fileIdArray.length) {
+            logger.info("size = {},length = {}",list.size(),fileIdArray.length);
             throw new BussinessException("未知异常");
         }
 
